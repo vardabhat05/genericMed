@@ -1,0 +1,7 @@
+{
+  "name": "genericMed - Generic Medicine Marketplace & Healthcare Operating System",
+  "description": "Multi-tenant generic medicine marketplace and clinical fulfillment platform featuring customer bioequivalent drug substitution, pharmacy dispensing node operations, manufacturer regulatory dossiers, and API gateway telemetry.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
