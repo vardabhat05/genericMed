@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: genericmed-config
+  namespace: genericmed-production
+  labels:
+    app.kubernetes.io/name: genericmed
+data:
+  NODE_ENV: "production"
+  PORT: "5000"
+  CORS_ORIGIN: "https://app.genericmed.io"
+  APP_URL: "https://app.genericmed.io"
+  FDA_COMPLIANCE_STANDARD: "21 CFR § 211"
+  USP_DISSOLUTION_STANDARD: "USP <711>"
+  FHIR_VERSION: "R4"
+  CLUSTER_REGION: "us-central1"
+  ACTIVE_NODES_EXPECTED: "142"

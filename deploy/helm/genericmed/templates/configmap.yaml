@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "genericmed.fullname" . }}-config
+  labels:
+    app.kubernetes.io/name: {{ include "genericmed.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  NODE_ENV: {{ .Values.env.NODE_ENV | quote }}
+  PORT: {{ .Values.env.PORT | quote }}
+  CORS_ORIGIN: {{ .Values.env.CORS_ORIGIN | quote }}
+  APP_URL: {{ .Values.env.APP_URL | quote }}
+  CLUSTER_REGION: {{ .Values.env.CLUSTER_REGION | quote }}
+  ACTIVE_NODES_EXPECTED: {{ .Values.env.ACTIVE_NODES_EXPECTED | quote }}

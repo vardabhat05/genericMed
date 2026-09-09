@@ -1,0 +1,28 @@
+{
+  "name": "genericmed-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "build": "tsc",
+    "test:api": "tsx src/tests/api.test.ts",
+    "test:phase2": "tsx src/tests/phase2_auth_db.test.ts",
+    "test:phase3": "tsx src/tests/phase3_ai_fhir.test.ts",
+    "test:phase5": "tsx src/tests/phase5_cloud_hardening.test.ts",
+    "test": "tsx src/tests/api.test.ts && tsx src/tests/phase2_auth_db.test.ts && tsx src/tests/phase3_ai_fhir.test.ts && tsx src/tests/phase5_cloud_hardening.test.ts",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@google/genai": "^2.4.0",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.14.0",
+    "tsx": "^4.21.0",
+    "typescript": "~5.8.2"
+  }
+}

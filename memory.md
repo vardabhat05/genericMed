@@ -2,8 +2,8 @@
 
 **Project:** genericMed — Generic Medicine Marketplace & Healthcare Operating System  
 **Repository:** `genericMed`  
-**Current Version:** 1.1.0  
-**Last Updated:** 2026-09-08  
+**Current Version:** 1.5.0  
+**Last Updated:** 2026-09-09  
 **Architecture Topology:** Production Topology v3.1 (Multi-Tenant SaaS / Edge & Microservice Mesh)
 
 ---
@@ -77,20 +77,52 @@
 | **Manufacturer Hub API** | ANDA regulatory dossiers & competitive volume RFQ bidding (`/api/v1/manufacturers`) | Completed |
 | **Operations Center API** | Operational exception triage & canonical salt dictionary registration (`/api/v1/operations`) | Completed |
 | **Developer Gateway API** | Client registry, test explorer simulation, and Kafka event emission (`/api/v1/gateway`) | Completed |
-| **Automated Test Suite** | Full automated HTTP test runner (`server/tests/api.test.ts`) with 12/12 passing tests | Completed |
+| **Phase 1 Test Suite** | Full automated HTTP test runner (`server/tests/api.test.ts`) with 12/12 passing tests | Completed |
+| **JWT Authentication & RBAC** | Native scrypt password hashing, HMAC-SHA256 JWT tokens, and persona authentication (`/api/v1/auth`) | Completed |
+| **Multi-Tenant Isolation & Guards**| Tenant scope validation & node-level protection preventing cross-node data leakage | Completed |
+| **PostgreSQL 16 Schema & RLS** | DDL migrations (`001_initial_schema.sql`, `002_rls_policies.sql`, `seed.sql`) & hybrid connection pool | Completed |
+| **HIPAA Clinical Audit Logging** | Tamper-evident audit trail service (`audit.service.ts`) logging orders, escrow & sign-offs | Completed |
+| **Phase 2 Test Suite** | Automated test suite (`server/tests/phase2_auth_db.test.ts`) with 12/12 passing tests | Completed |
+| **Gemini Vision AI OCR** | Server-side prescription analysis using `@google/genai` (`/api/v1/prescriptions/ocr-extract`) | Completed |
+| **HL7 FHIR R4 API** | Interoperability endpoints (`MedicationRequest`, `MedicationDispense`, `Bundle`) | Completed |
+| **SSE Telemetry Streaming** | Live Server-Sent Events IoT cold-chain stream (`/api/v1/telemetry/stream`) | Completed |
+| **Phase 3 Test Suite** | Automated test suite (`server/tests/phase3_ai_fhir.test.ts`) with 12/12 passing tests | Completed |
+| **Unified API Client Bridge** | Centralized typed `apiClient.ts` with transparent mock fallback and token management | Completed |
+| **End-to-End View Wiring** | Full dynamic backend wiring across Customer, Store Node #4, MFR Hub, Ops, and API Gateway | Completed |
+| **Phase Roadmap Tracking** | Comprehensive `phases.md` milestone tracking document established | Completed |
+| **Multi-Stage Dockerfile** | Node 20 Alpine builder and minimal runner with non-root security (`USER node`) | Completed |
+| **Kubernetes Production Suite** | 7 enterprise manifests (`namespace`, `configmap`, `secret`, `deployment`, `service`, `ingress`, `hpa`) | Completed |
+| **Helm 3 Chart Package** | Reusable package (`deploy/helm/genericmed/`) with parameterized values and templates | Completed |
+| **Distributed Redis Cache** | Redis client with key namespacing, TTL expiry, and zero-crash LRU memory fallback | Completed |
+| **Sliding-Window Rate Limiting**| Middleware enforcing RFC headers (`RateLimit-Limit`, `RateLimit-Remaining`, `RateLimit-Reset`) | Completed |
+| **Kafka Broker & DLQ Routing** | Enterprise event publisher with Dead Letter Queue routing for failed consumer events | Completed |
+| **Payment Gateway Adapter** | Universal `PaymentGatewayProvider` interface supporting Escrow Vault, Stripe, and Dwolla | Completed |
+| **Observability & Probes** | Prometheus `/metrics`, `/health/live` (liveness probe), and `/health/ready` (readiness probe) | Completed |
+| **Phase 5 Test Suite** | Automated test runner (`server/tests/phase5_cloud_hardening.test.ts`) passing 12/12 tests | Completed |
 
 ---
 
 ## 4. Pending Features & Engineering Roadmap
 
-- [x] **Production Express Backend Bootstrap:** Dedicated Express application in `/server` mounting routes under `/api/v1`.
-- [x] **Formulary & Bioequivalence API:** REST endpoints serving active medicines, PK metrics, and dissolution curves.
-- [x] **Dispensary & Orders API:** Endpoints handling escrow creation, pharmacist sign-off, and barcode verification.
-- [x] **Manufacturer RFQ Service:** Backend endpoints for dossier submission and RFQ bidding with concurrency protection.
-- [x] **Automated Test Suite:** Integration tests validating $f_2$ calculations, order state transitions, and authorization.
-- [ ] **Gemini OCR Backend Integration:** Server-side proxy using `@google/genai` to analyze uploaded prescription images securely.
-- [ ] **Persistent Database Adapters:** PostgreSQL client with migrations and repository implementations.
-- [ ] **JWT Authentication & Role Middleware:** Cryptographic tenant scope injection and token verification.
+- [x] **Phase 1: Production Express Backend Bootstrap:** Dedicated Express application in `/server` mounting routes under `/api/v1`.
+- [x] **Phase 1: Formulary & Bioequivalence API:** REST endpoints serving active medicines, PK metrics, and dissolution curves.
+- [x] **Phase 1: Dispensary & Orders API:** Endpoints handling escrow creation, pharmacist sign-off, and barcode verification.
+- [x] **Phase 1: Manufacturer RFQ Service:** Backend endpoints for dossier submission and RFQ bidding with concurrency protection.
+- [x] **Phase 1: Automated Test Suite:** Integration tests validating $f_2$ calculations, order state transitions, and authorization.
+- [x] **Phase 2: JWT Authentication & Role Middleware:** Cryptographic tenant scope injection and token verification.
+- [x] **Phase 2: PostgreSQL Schema, Migrations & RLS:** Enterprise DDL migrations and hybrid database manager.
+- [x] **Phase 2: Clinical Audit Logging:** HIPAA/FDA Part 11 compliant audit logging.
+- [x] **Phase 3: Gemini OCR Backend Integration:** Server-side proxy using `@google/genai` to analyze uploaded prescription images securely.
+- [x] **Phase 3: Live WebSockets / SSE Telemetry Stream:** Real-time store node cold-chain telemetry updates.
+- [x] **Phase 3: HL7 FHIR R4 Interoperability:** Standardized clinical resources for EHR integrations.
+- [x] **Phase 4: Unified Resilient API Client:** Centralized fetch client bridge with automatic fallback.
+- [x] **Phase 4: Cross-Persona JWT Token Sync:** Automatic tenant credentials switching in header.
+- [x] **Phase 4: Live View Integration:** Dynamic wiring of all 5 persona consoles to backend endpoints.
+- [x] **Phase 5: Multi-Region Kubernetes Deployment:** Production manifests, Helm charts, and HPA autoscaling.
+- [x] **Phase 5: Distributed Caching & Rate Limiting:** Redis cache manager and sliding-window rate limiter.
+- [x] **Phase 5: Enterprise Message Broker & DLQ:** Kafka topics and Dead Letter Queue error routing.
+- [x] **Phase 5: Payment Gateway Adapter:** Escrow Vault and universal provider interface.
+- [x] **Phase 5: Observability & Probes:** Prometheus exposition (`/metrics`) and `/health/live`, `/health/ready`.
 
 ---
 

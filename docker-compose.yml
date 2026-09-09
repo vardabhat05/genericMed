@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # ----------------------------------------------------------------------------
+  # genericMed Application Server & API Gateway
+  # ----------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: genericmed-api
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - CORS_ORIGIN=*
+      - DATABASE_URL=postgres://genericmed_app:secure_med_pass_2026@postgres:5432/genericmed_db
+      - REDIS_URL=redis://redis:6379
+      - KAFKA_BROKERS=kafka:9092
+      - JWT_SECRET=production_super_secure_jwt_hmac_sha256_key_genericmed_2026!
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health/live"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - genericmed-net
+
+  # ----------------------------------------------------------------------------
+  # PostgreSQL 16 ACID Relational Database & Row-Level Security
+  # ----------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: genericmed-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: genericmed_app
+      POSTGRES_PASSWORD: secure_med_pass_2026
+      POSTGRES_DB: genericmed_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/src/db/migrations/001_initial_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./backend/src/db/migrations/002_rls_policies.sql:/docker-entrypoint-initdb.d/02_rls.sql:ro
+      - ./backend/src/db/seed.sql:/docker-entrypoint-initdb.d/03_seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U genericmed_app -d genericmed_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - genericmed-net
+
+  # ----------------------------------------------------------------------------
+  # Redis 7.2 Cache Tier & Distributed Sliding-Window Rate Limiting
+  # ----------------------------------------------------------------------------
+  redis:
+    image: redis:7.2-alpine
+    container_name: genericmed-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - genericmed-net
+
+volumes:
+  pgdata:
+    driver: local
+  redisdata:
+    driver: local
+
+networks:
+  genericmed-net:
+    driver: bridge

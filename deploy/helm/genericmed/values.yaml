@@ -1,0 +1,62 @@
+replicaCount: 3
+
+image:
+  repository: ghcr.io/genericmed/genericmed-api
+  pullPolicy: IfNotPresent
+  tag: "v1.5.0"
+
+nameOverride: ""
+fullnameOverride: "genericmed"
+
+service:
+  type: ClusterIP
+  port: 5000
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/proxy-body-size: "20m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: api.genericmed.io
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: genericmed-api-tls
+      hosts:
+        - api.genericmed.io
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+env:
+  NODE_ENV: "production"
+  PORT: "5000"
+  CORS_ORIGIN: "https://app.genericmed.io"
+  APP_URL: "https://app.genericmed.io"
+  CLUSTER_REGION: "us-central1"
+  ACTIVE_NODES_EXPECTED: "142"
+
+secrets:
+  JWT_SECRET: "prod_helm_enterprise_hmac_sha256_genericmed_vault_2026!"
+  DATABASE_URL: "postgres://genericmed_app:secure_med_pass_2026@postgres:5432/genericmed_db"
+  REDIS_URL: "redis://redis:6379"
+  KAFKA_BROKERS: "kafka:9092"
+  GEMINI_API_KEY: ""
